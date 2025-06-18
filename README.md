@@ -38,7 +38,6 @@ g++ -std=c++17 main.cpp -o main.exe
 
 - Forward pass funcional con datos de ejemplo y vocabularios pequeños.
 - No incluye entrenamiento ni evaluación.
-- Todo el código es didáctico y autocontenible.
 
 ## Próximos pasos
 
