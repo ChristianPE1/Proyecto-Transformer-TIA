@@ -1,0 +1,28 @@
+# Ignorar archivos ejecutables de Windows
+*.exe
+
+# Ignorar archivos de objetos y binarios de C++
+*.obj
+*.o
+*.dll
+*.lib
+*.so
+*.out
+
+# Ignorar archivos de depuración
+*.pdb
+
+# Ignorar archivos de respaldo y temporales
+*~
+*.tmp
+*.log
+
+# Ignorar carpetas generadas por VS Code
+.vscode/
+
+# Ignorar carpetas de compilación comunes
+build/
+dist/
+bin/
+Debug/
+Release/
