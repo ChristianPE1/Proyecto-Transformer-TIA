@@ -1,4 +1,4 @@
-# Transformer C++ - Fase 1
+# Transformer C++ - Fase 2
 
 Este proyecto es la **primera fase** de una réplica en C++ del modelo Transformer presentado en el paper ["Attention Is All You Need" (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762).
 
