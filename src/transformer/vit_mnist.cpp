@@ -106,9 +106,31 @@ void PatchEmbedding::updateWeights(float learning_rate) {
     grad_projection = Matrix(patch_size * patch_size, embed_dim, 0.0f);
 }
 
+// Implementación en PatchEmbedding
+void PatchEmbedding::saveWeights(std::ofstream& file) {
+    // Guardar configuración
+    file.write(reinterpret_cast<const char*>(&patch_size), sizeof(int));
+    file.write(reinterpret_cast<const char*>(&embed_dim), sizeof(int));
+
+    // Guardar matriz de proyección
+    Matrix::saveMatrix(file, projection);
+}
+
+void PatchEmbedding::loadWeights(std::ifstream& file) {
+    // Cargar configuración
+    file.read(reinterpret_cast<char*>(&patch_size), sizeof(int));
+    file.read(reinterpret_cast<char*>(&embed_dim), sizeof(int));
+
+    // Cargar matriz de proyección
+    projection = Matrix::loadMatrix(file);
+
+    // Reinicializar gradientes
+    grad_projection = Matrix(projection.getRows(), projection.getCols(), 0.0);
+}
+
 // Implementacion de ViTBlock
-ViTBlock::ViTBlock(int embed_dim, int num_heads) 
-    : attention(embed_dim, num_heads), mlp(embed_dim, embed_dim * 4), 
+ViTBlock::ViTBlock(int embed_dim, int num_heads, int mlp_hidden_layers)
+    : attention(embed_dim, num_heads), mlp(embed_dim, mlp_hidden_layers),
       norm1(embed_dim), norm2(embed_dim) {
 }
 
@@ -167,7 +189,6 @@ Matrix ViTBlock::backward(const Matrix& grad_output) {
     return grad_input;
 }
 
-
 void ViTBlock::updateWeights(float learning_rate) {
     // Actualizar TODOS los componentes del bloque transformer
     attention.updateWeights(learning_rate);
@@ -176,9 +197,25 @@ void ViTBlock::updateWeights(float learning_rate) {
     norm2.updateWeights(learning_rate);
 }
 
+
+// Implementación en ViTBlock
+void ViTBlock::saveWeights(std::ofstream& file) {
+    attention.saveWeights(file);
+    mlp.saveWeights(file);
+    norm1.saveWeights(file);
+    norm2.saveWeights(file);
+}
+
+void ViTBlock::loadWeights(std::ifstream& file) {
+    attention.loadWeights(file);
+    mlp.loadWeights(file);
+    norm1.loadWeights(file);
+    norm2.loadWeights(file);
+}
+
 // Implementacion de ViTMNIST
-ViTMNIST::ViTMNIST(int patch_size, int embed_dim, int num_heads, int num_layers, int num_classes)
-    : patch_embed(patch_size, embed_dim), norm(embed_dim), classifier(embed_dim, num_classes),
+ViTMNIST::ViTMNIST(int patch_size, int embed_dim, int num_heads, int num_layers, int mlp_hidden_layers_size, int num_classes)
+    : patch_size(patch_size), patch_embed(patch_size, embed_dim), norm(embed_dim), classifier(embed_dim, num_classes),
       embed_dim(embed_dim), num_classes(num_classes), 
       last_pooled(1, embed_dim, 0.0f), last_normalized(1, embed_dim, 0.0f) {
     
@@ -214,7 +251,7 @@ ViTMNIST::ViTMNIST(int patch_size, int embed_dim, int num_heads, int num_layers,
     // Inicializar bloques transformer
     blocks.reserve(num_layers);
     for (int i = 0; i < num_layers; i++) {
-        blocks.emplace_back(embed_dim, num_heads);
+        blocks.emplace_back(embed_dim, num_heads, mlp_hidden_layers_size);
     }
 }
 
@@ -239,7 +276,7 @@ Matrix ViTMNIST::forward(const Matrix& x) {
             throw std::runtime_error("ViTMNIST::forward - transformer block " + std::to_string(i) + " returned empty matrix");
         }
     }
-    
+
     // Normalizacion por capas
     last_normalized = norm.forward(current);
     if (last_normalized.getRows() == 0 || last_normalized.getCols() == 0) {
@@ -355,5 +392,113 @@ void ViTMNIST::update_weights(float learning_rate) {
     }
 }
 
+int ViTMNIST::predict(const Matrix& image) {
+    // Forward pass (solo inferencia, sin backward)
+    Matrix logits = forward(image);
+
+    // Get predicted class
+    std::vector<float> pred_data = logits.getDataVector();
+    int predicted_class = std::max_element(pred_data.begin(), pred_data.end()) - pred_data.begin();
+
+    return predicted_class;
+}
+
 // --- Metodos para PatchEmbedding y otros componentes pueden agregarse si se requiere entrenamiento completo ---
 // Por ahora, solo se tiene el entrenamiento simplificado de la capa de clasificacion
+
+void ViTMNIST::save_weights(const std::string& file_path) {
+    std::ofstream file(file_path, std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file for saving: " << file_path << std::endl;
+        return;
+    }
+
+    try {
+        // Guardar configuración del modelo
+        file.write(reinterpret_cast<const char*>(&patch_size), sizeof(int));
+        file.write(reinterpret_cast<const char*>(&embed_dim), sizeof(int));
+        file.write(reinterpret_cast<const char*>(&num_patches), sizeof(int));
+        file.write(reinterpret_cast<const char*>(&num_classes), sizeof(int));
+
+        // Número de bloques
+        int num_blocks = blocks.size();
+        file.write(reinterpret_cast<const char*>(&num_blocks), sizeof(int));
+
+        // Guardar embedding de patches
+        patch_embed.saveWeights(file);
+
+        // Guardar embedding posicional
+        Matrix::saveMatrix(file, pos_embedding);
+
+        // Guardar todos los bloques ViT
+        for (auto& block : blocks) {
+            block.saveWeights(file);
+        }
+
+        // Guardar layer norm final
+        norm.saveWeights(file);
+
+        // Guardar clasificador
+        classifier.saveWeights(file);
+
+        std::cout << "Weights successfully saved in: " << file_path << std::endl;
+
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error loading weights: " << e.what() << std::endl;
+    }
+
+    file.close();
+}
+
+void ViTMNIST::load_weights(const std::string& file_path) {
+    std::ifstream file(file_path, std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file for upload:" << file_path << std::endl;
+        return;
+    }
+
+    try {
+        // Cargar configuración del modelo
+        file.read(reinterpret_cast<char*>(&patch_size), sizeof(int));
+        file.read(reinterpret_cast<char*>(&embed_dim), sizeof(int));
+        file.read(reinterpret_cast<char*>(&num_patches), sizeof(int));
+        file.read(reinterpret_cast<char*>(&num_classes), sizeof(int));
+
+        // Número de bloques
+        int num_blocks;
+        file.read(reinterpret_cast<char*>(&num_blocks), sizeof(int));
+
+        // Verificar que la configuración coincida
+        if (num_blocks != blocks.size()) {
+            std::cerr << "Error: Block count does not match. Expected:"
+                << blocks.size() << ", Found: " << num_blocks << std::endl;
+            return;
+        }
+
+        // Cargar embedding de patches
+        patch_embed.loadWeights(file);
+
+        // Cargar embedding posicional
+        pos_embedding = Matrix::loadMatrix(file);
+
+        // Cargar todos los bloques ViT
+        for (auto& block : blocks) {
+            block.loadWeights(file);
+        }
+
+        // Cargar layer norm final
+        norm.loadWeights(file);
+
+        // Cargar clasificador
+        classifier.loadWeights(file);
+
+        std::cout << "Weights successfully loaded from:" << file_path << std::endl;
+
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error loading weights:" << e.what() << std::endl;
+    }
+
+    file.close();
+}

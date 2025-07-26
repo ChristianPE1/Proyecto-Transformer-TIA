@@ -5,6 +5,11 @@
 #include "../layers/layer_norm.hpp"
 #include "../layers/feed_forward.hpp"
 #include <vector>
+#include <fstream>
+#include <algorithm>
+#include <cmath>
+#include <string>
+#include "data/mnist_loader.hpp"
 
 class PatchEmbedding {
 private:
@@ -18,6 +23,8 @@ public:
     Matrix forward(const Matrix& image);
     Matrix backward(const Matrix& grad_output);
     void updateWeights(float learning_rate);
+    void saveWeights(std::ofstream& file);
+    void loadWeights(std::ifstream& file);
 };
 
 class ViTBlock {
@@ -32,10 +39,12 @@ private:
     Matrix stored_mlp_out;
     Matrix stored_x2;
 public:
-    ViTBlock(int embed_dim, int num_heads);
+    ViTBlock(int embed_dim, int num_heads, int mlp_hidden_layers_size);
     Matrix forward(const Matrix& x);
     Matrix backward(const Matrix& grad_output);
     void updateWeights(float learning_rate);
+    void saveWeights(std::ofstream& file);
+    void loadWeights(std::ifstream& file);
 };
 
 class ViTMNIST {
@@ -45,14 +54,23 @@ private:
     LayerNorm norm;
     Linear classifier;
     Matrix pos_embedding;
+    int patch_size;
     int num_patches;
     int embed_dim;
     int num_classes;
     Matrix last_pooled;
     Matrix last_normalized;
 public:
-    ViTMNIST(int patch_size = 4, int embed_dim = 128, int num_heads = 8, int num_layers = 6, int num_classes = 10);
+    ViTMNIST(int patch_size = 4,
+        int embed_dim = 128,
+        int num_heads = 8,
+        int num_layers = 6,
+        int mlp_hidden_layers_size = 128,
+        int num_classes = 10);
     Matrix forward(const Matrix& x);
     void backward(const Matrix& loss_grad);
     void update_weights(float learning_rate = 0.001f);
+    int predict(const Matrix& image);
+    void save_weights(const std::string& file_path);
+    void load_weights(const std::string& file_path);
 };

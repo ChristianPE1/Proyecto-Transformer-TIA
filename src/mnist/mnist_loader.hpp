@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <array>
+#include <cstdint>
 
 struct MNISTData {
     std::vector<std::vector<float>> images;
@@ -19,14 +21,12 @@ public:
             throw std::runtime_error("Failed to open images file: " + images_path);
         }
         int magic_number, num_images, rows, cols;
-        images_file.read(reinterpret_cast<char*>(&magic_number), sizeof(int));
-        images_file.read(reinterpret_cast<char*>(&num_images), sizeof(int));
-        images_file.read(reinterpret_cast<char*>(&rows), sizeof(int));
-        images_file.read(reinterpret_cast<char*>(&cols), sizeof(int));
-        magic_number = __builtin_bswap32(magic_number);
-        num_images = __builtin_bswap32(num_images);
-        rows = __builtin_bswap32(rows);
-        cols = __builtin_bswap32(cols);
+
+        magic_number = static_cast<int>(read_big_endian_uint32(images_file));
+        num_images = static_cast<int>(read_big_endian_uint32(images_file));
+        rows = static_cast<int>(read_big_endian_uint32(images_file));
+        cols = static_cast<int>(read_big_endian_uint32(images_file));
+
         std::cout << "MNIST Images: " << num_images << " images of " << rows << "x" << cols << std::endl;
         for (int i = 0; i < num_images; i++) {
             std::vector<float> image(rows * cols);
@@ -43,10 +43,10 @@ public:
             throw std::runtime_error("Failed to open labels file: " + labels_path);
         }
         int label_magic, num_labels;
-        labels_file.read(reinterpret_cast<char*>(&label_magic), sizeof(int));
-        labels_file.read(reinterpret_cast<char*>(&num_labels), sizeof(int));
-        label_magic = __builtin_bswap32(label_magic);
-        num_labels = __builtin_bswap32(num_labels);
+
+        label_magic = static_cast<int>(read_big_endian_uint32(labels_file));
+        num_labels = static_cast<int>(read_big_endian_uint32(labels_file));
+
         std::cout << "MNIST Labels: " << num_labels << " labels" << std::endl;
         for (int i = 0; i < num_labels; i++) {
             unsigned char label;
@@ -77,5 +77,11 @@ public:
             patches.push_back(image_patches);
         }
         return patches;
+    }
+
+    static uint32_t read_big_endian_uint32(std::ifstream& stream) {
+        std::array<uint8_t, 4> bytes;
+        stream.read(reinterpret_cast<char*>(bytes.data()), 4);
+        return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
     }
 };

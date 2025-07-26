@@ -2,6 +2,7 @@
 #include "utils/matrix.hpp"
 #include <vector>
 #include <cstddef>
+#include <fstream>
 
 class MultiHeadAttention {
 public:
@@ -12,6 +13,8 @@ public:
     void backward(const Matrix &grad_output, Matrix &grad_query, Matrix &grad_key, Matrix &grad_value);
     void updateWeights(float learning_rate);
     void updateGradients(const Matrix &grad_output, const Matrix &query, const Matrix &key, const Matrix &value);
+    void saveWeights(std::ofstream& file);
+    void loadWeights(std::ifstream& file);
 private:
     void initializeWeights();
     size_t d_model;
@@ -30,4 +33,4 @@ private:
     Matrix last_Q, last_K, last_V;  // Q, K, V proyectadas
     Matrix last_attention_weights;
     Matrix last_attention_output;   // Salida antes de W_O
-};
+};s

@@ -412,3 +412,38 @@ void MultiHeadAttention::updateGradients(const Matrix &grad_output, const Matrix
     // Los gradientes ya se calculan en el método backward, no necesitamos hacer nada aquí
     // Este método se mantiene por compatibilidad pero no hace nada
 }
+
+// Implementación en MultiHeadAttention
+void MultiHeadAttention::saveWeights(std::ofstream& file) {
+    // Guardar configuración
+    file.write(reinterpret_cast<const char*>(&d_model), sizeof(size_t));
+    file.write(reinterpret_cast<const char*>(&n_heads), sizeof(size_t));
+    file.write(reinterpret_cast<const char*>(&d_k), sizeof(size_t));
+    file.write(reinterpret_cast<const char*>(&d_v), sizeof(size_t));
+
+    // Guardar matrices de pesos
+    Matrix::saveMatrix(file, W_Q);
+    Matrix::saveMatrix(file, W_K);
+    Matrix::saveMatrix(file, W_V);
+    Matrix::saveMatrix(file, W_O);
+}
+
+void MultiHeadAttention::loadWeights(std::ifstream& file) {
+    // Cargar configuración
+    file.read(reinterpret_cast<char*>(&d_model), sizeof(size_t));
+    file.read(reinterpret_cast<char*>(&n_heads), sizeof(size_t));
+    file.read(reinterpret_cast<char*>(&d_k), sizeof(size_t));
+    file.read(reinterpret_cast<char*>(&d_v), sizeof(size_t));
+
+    // Cargar matrices de pesos
+    W_Q = Matrix::loadMatrix(file);
+    W_K = Matrix::loadMatrix(file);
+    W_V = Matrix::loadMatrix(file);
+    W_O = Matrix::loadMatrix(file);
+
+    // Reinicializar gradientes
+    grad_W_Q = Matrix(W_Q.getRows(), W_Q.getCols(), 0.0);
+    grad_W_K = Matrix(W_K.getRows(), W_K.getCols(), 0.0);
+    grad_W_V = Matrix(W_V.getRows(), W_V.getCols(), 0.0);
+    grad_W_O = Matrix(W_O.getRows(), W_O.getCols(), 0.0);
+}
