@@ -169,20 +169,9 @@ int main(int argc, char** argv) {
     std::cout << "Loaded test data: " << test_data.images.size() << " images and "
         << test_data.labels.size() << " labels" << std::endl;
 
-    int patch_size = 7;  // Patches más grandes 
-    int embed_dim = 64;   // Dimensión más grande pero manejable
-    int num_heads = 2;    // 2 heads
-    int num_layers = 3;   // 2 capas
-    int mlp_hidden_layers_size = 96;
-    int num_classes = 10;
+        
+    auto vit_model = ViTMNIST::load_pretrained_model();
 
-    ViTMNIST vit_model(
-        patch_size,
-        embed_dim,
-        num_heads,
-        num_layers,
-        mlp_hidden_layers_size,
-        num_classes);
 
     std::cout << "Vision Transformer for MNIST initialized" << std::endl;
 
