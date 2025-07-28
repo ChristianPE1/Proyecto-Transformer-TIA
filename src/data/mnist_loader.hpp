@@ -56,6 +56,7 @@ public:
         labels_file.close();
         return data;
     }
+    
     std::vector<std::vector<std::vector<float>>> create_patches(const std::vector<std::vector<float>>& images, int patch_size) {
         std::vector<std::vector<std::vector<float>>> patches;
         for (const auto& image : images) {

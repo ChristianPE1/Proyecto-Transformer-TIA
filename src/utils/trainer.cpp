@@ -53,20 +53,12 @@ void Trainer::train(
             size_t current_batch_size = batch_end - i;
 
             // Create batch matrices
-            //std::vector<float> batch_images(current_batch_size * 28 * 28);
             std::vector<int> batch_index(current_batch_size);
 
             // Fill batch data
             for (size_t j = 0; j < current_batch_size; ++j) {
                 size_t img_idx = i + j;
                 batch_index[j] = random_indices[img_idx];
-
-                /*
-                std::copy(train_data.images[img_idx].begin(),
-                    train_data.images[img_idx].end(),
-                    batch_images.begin() + j * 784);
-                batch_labels[j] = train_data.labels[img_idx];
-                */
             }
             
             float batch_loss = 0.0f;
@@ -75,8 +67,6 @@ void Trainer::train(
             // Procesa cada imagen en el lote
             for (size_t j = 0; j < current_batch_size; ++j) {
                 // Extract single image from batch
-                // std::vector<float> single_image(batch_images.begin() + j * 784, batch_images.begin() + (j + 1) * 784);
-
                 Matrix image(train_data.images[batch_index[j]], 28, 28);
 
                 // Forward pass

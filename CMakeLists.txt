@@ -19,7 +19,7 @@ add_executable(main ${CPP_SOURCES})
 
 
 target_compile_definitions(main PRIVATE 
-    DATA_DIR="${CMAKE_SOURCE_DIR}/data/mnist/"
+    DATA_DIR="${CMAKE_SOURCE_DIR}/data/"
     IMAGES_DIR="${CMAKE_SOURCE_DIR}/data/processed_images/"
     WEIGHTS_DIR="${CMAKE_SOURCE_DIR}/weights/"
 )
