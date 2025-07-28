@@ -140,27 +140,3 @@ void LayerNorm::updateWeights(float learning_rate) {
     grad_gamma.fill(0.0f);
     grad_beta.fill(0.0f);
 }
-
-void LayerNorm::saveWeights(std::ofstream& file) {
-    // Guardar configuración
-    file.write(reinterpret_cast<const char*>(&d_model), sizeof(size_t));
-    file.write(reinterpret_cast<const char*>(&epsilon), sizeof(double));
-
-    // Guardar parámetros
-    Matrix::saveMatrix(file, gamma);
-    Matrix::saveMatrix(file, beta);
-}
-
-void LayerNorm::loadWeights(std::ifstream& file) {
-    // Cargar configuración
-    file.read(reinterpret_cast<char*>(&d_model), sizeof(size_t));
-    file.read(reinterpret_cast<char*>(&epsilon), sizeof(double));
-
-    // Cargar parámetros
-    gamma = Matrix::loadMatrix(file);
-    beta = Matrix::loadMatrix(file);
-
-    // Reinicializar gradientes
-    grad_gamma = Matrix(gamma.getRows(), gamma.getCols(), 0.0);
-    grad_beta = Matrix(beta.getRows(), beta.getCols(), 0.0);
-}
