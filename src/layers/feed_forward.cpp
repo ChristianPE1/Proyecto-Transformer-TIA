@@ -1,4 +1,3 @@
-// filepath: cuda-transformer/cuda-transformer/src/layers/feed_forward.cu
 #include "feed_forward.hpp"
 #include <algorithm>
 #include <cmath>
@@ -259,20 +258,16 @@ void FeedForward::updateWeights(float learning_rate) {
         }
     }
     
-    // Reset gradients
     grad_W1.fill(0.0f);
     grad_W2.fill(0.0f);
     grad_b1.fill(0.0f);
     grad_b2.fill(0.0f);
 }
 
-// Implementación en FeedForward
+
 void FeedForward::saveWeights(std::ofstream& file) {
-    // Guardar configuración
     file.write(reinterpret_cast<const char*>(&d_model), sizeof(size_t));
     file.write(reinterpret_cast<const char*>(&d_ff), sizeof(size_t));
-
-    // Guardar matrices de pesos y bias
     Matrix::saveMatrix(file, W1);
     Matrix::saveMatrix(file, W2);
     Matrix::saveMatrix(file, b1);
@@ -280,17 +275,14 @@ void FeedForward::saveWeights(std::ofstream& file) {
 }
 
 void FeedForward::loadWeights(std::ifstream& file) {
-    // Cargar configuración
     file.read(reinterpret_cast<char*>(&d_model), sizeof(size_t));
     file.read(reinterpret_cast<char*>(&d_ff), sizeof(size_t));
 
-    // Cargar matrices de pesos y bias
     W1 = Matrix::loadMatrix(file);
     W2 = Matrix::loadMatrix(file);
     b1 = Matrix::loadMatrix(file);
     b2 = Matrix::loadMatrix(file);
 
-    // Reinicializar gradientes
     grad_W1 = Matrix(W1.getRows(), W1.getCols(), 0.0);
     grad_W2 = Matrix(W2.getRows(), W2.getCols(), 0.0);
     grad_b1 = Matrix(b1.getRows(), b1.getCols(), 0.0);

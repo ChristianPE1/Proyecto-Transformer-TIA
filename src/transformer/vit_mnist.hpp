@@ -74,13 +74,12 @@ public:
     void save_weights(const std::string& file_path);
     void load_weights(const std::string& file_path);
 
-
     // Static method to load a pretrained model
-    static ViTMNIST load_pretrained_model(const std::string& path = "./weights/mnist.bin") {
-        int patch_size = 7;  
-        int embed_dim = 64;   
-        int num_heads = 2;    
-        int num_layers = 3;  
+    static ViTMNIST load_pretrained_model() {
+        int patch_size = 7;
+        int embed_dim = 64;
+        int num_heads = 2;
+        int num_layers = 3;
         int mlp_hidden_layers_size = 96;
         int num_classes = 10;
 
@@ -92,7 +91,7 @@ public:
             mlp_hidden_layers_size,
             num_classes);
 
-        vit_model.load_weights(path);
+        vit_model.load_weights(std::string(WEIGHTS_DIR) + "mnist.bin");
 
         return vit_model;
     }

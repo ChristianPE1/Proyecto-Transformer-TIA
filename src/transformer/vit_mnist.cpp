@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 
+
 // Implementacion de PatchEmbedding
 PatchEmbedding::PatchEmbedding(int patch_size, int embed_dim) 
     : patch_size(patch_size), embed_dim(embed_dim), 
@@ -414,31 +415,24 @@ void ViTMNIST::save_weights(const std::string& file_path) {
     }
 
     try {
-        // Guardar configuración del modelo
         file.write(reinterpret_cast<const char*>(&patch_size), sizeof(int));
         file.write(reinterpret_cast<const char*>(&embed_dim), sizeof(int));
         file.write(reinterpret_cast<const char*>(&num_patches), sizeof(int));
         file.write(reinterpret_cast<const char*>(&num_classes), sizeof(int));
 
-        // Número de bloques
         int num_blocks = blocks.size();
         file.write(reinterpret_cast<const char*>(&num_blocks), sizeof(int));
 
-        // Guardar embedding de patches
         patch_embed.saveWeights(file);
 
-        // Guardar embedding posicional
         Matrix::saveMatrix(file, pos_embedding);
 
-        // Guardar todos los bloques ViT
         for (auto& block : blocks) {
             block.saveWeights(file);
         }
 
-        // Guardar layer norm final
         norm.saveWeights(file);
 
-        // Guardar clasificador
         classifier.saveWeights(file);
 
         std::cout << "Weights successfully saved in: " << file_path << std::endl;
@@ -459,38 +453,30 @@ void ViTMNIST::load_weights(const std::string& file_path) {
     }
 
     try {
-        // Cargar configuración del modelo
         file.read(reinterpret_cast<char*>(&patch_size), sizeof(int));
         file.read(reinterpret_cast<char*>(&embed_dim), sizeof(int));
         file.read(reinterpret_cast<char*>(&num_patches), sizeof(int));
         file.read(reinterpret_cast<char*>(&num_classes), sizeof(int));
 
-        // Número de bloques
         int num_blocks;
         file.read(reinterpret_cast<char*>(&num_blocks), sizeof(int));
 
-        // Verificar que la configuración coincida
         if (num_blocks != blocks.size()) {
             std::cerr << "Error: Block count does not match. Expected:"
                 << blocks.size() << ", Found: " << num_blocks << std::endl;
             return;
         }
 
-        // Cargar embedding de patches
         patch_embed.loadWeights(file);
 
-        // Cargar embedding posicional
         pos_embedding = Matrix::loadMatrix(file);
 
-        // Cargar todos los bloques ViT
         for (auto& block : blocks) {
             block.loadWeights(file);
         }
 
-        // Cargar layer norm final
         norm.loadWeights(file);
 
-        // Cargar clasificador
         classifier.loadWeights(file);
 
         std::cout << "Weights successfully loaded from:" << file_path << std::endl;
@@ -502,3 +488,4 @@ void ViTMNIST::load_weights(const std::string& file_path) {
 
     file.close();
 }
+

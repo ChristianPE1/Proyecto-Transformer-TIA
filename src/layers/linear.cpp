@@ -1,4 +1,3 @@
-// filepath: cuda-transformer/cuda-transformer/src/layers/linear.cu
 #include "linear.hpp"
 #include <cstdlib>
 #include <cmath>
@@ -173,10 +172,8 @@ Linear::Linear(size_t input_dim, size_t output_dim)
     initialize();
 }
 
-// Destructor
-Linear::~Linear() {
-    // Matrix destructor will handle cleanup automatically
-}
+
+Linear::~Linear() {}
 
 // Initialize weights and bias
 void Linear::initialize() {
@@ -210,27 +207,18 @@ void Linear::initialize() {
     bias = Matrix(bias_data, 1, output_dim);
 }
 
-// Implementación en Linear
 void Linear::saveWeights(std::ofstream& file) {
-    // Guardar configuración
     file.write(reinterpret_cast<const char*>(&input_dim), sizeof(size_t));
     file.write(reinterpret_cast<const char*>(&output_dim), sizeof(size_t));
-
-    // Guardar matrices de pesos y bias
     Matrix::saveMatrix(file, weights);
     Matrix::saveMatrix(file, bias);
 }
 
 void Linear::loadWeights(std::ifstream& file) {
-    // Cargar configuración
     file.read(reinterpret_cast<char*>(&input_dim), sizeof(size_t));
     file.read(reinterpret_cast<char*>(&output_dim), sizeof(size_t));
-
-    // Cargar matrices de pesos y bias
     weights = Matrix::loadMatrix(file);
     bias = Matrix::loadMatrix(file);
-
-    // Reinicializar gradientes
     stored_grad_weights = Matrix(weights.getRows(), weights.getCols(), 0.0);
     stored_grad_bias = Matrix(bias.getRows(), bias.getCols(), 0.0);
 }

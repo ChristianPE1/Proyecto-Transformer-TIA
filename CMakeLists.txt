@@ -11,9 +11,21 @@ file(GLOB_RECURSE CPP_SOURCES
     "src/*.cpp"
 )
 
-add_executable(cuda_transformer ${CPP_SOURCES})
+file(GLOB_RECURSE HEADERS
+    "src/*.hpp"
+)
 
-set_target_properties(cuda_transformer PROPERTIES
+add_executable(main ${CPP_SOURCES})
+
+
+target_compile_definitions(main PRIVATE 
+    DATA_DIR="${CMAKE_SOURCE_DIR}/data/mnist/"
+    IMAGES_DIR="${CMAKE_SOURCE_DIR}/data/processed_images/"
+    WEIGHTS_DIR="${CMAKE_SOURCE_DIR}/weights/"
+)
+
+
+set_target_properties(main PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 

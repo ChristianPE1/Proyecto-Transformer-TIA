@@ -33,4 +33,4 @@ private:
     Matrix last_Q, last_K, last_V;  // Q, K, V proyectadas
     Matrix last_attention_weights;
     Matrix last_attention_output;   // Salida antes de W_O
-};s
+};

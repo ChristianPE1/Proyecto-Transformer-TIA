@@ -1,5 +1,3 @@
-
-// src/layers/layer_norm.cpp
 #include "layer_norm.hpp"
 #include <cstdio>
 #include <vector>
@@ -20,7 +18,6 @@ Matrix LayerNorm::forward(const Matrix &input) {
     int N = input.getRows();
     int D = input.getCols();
 
-    // Use CPU implementation for stability
     const std::vector<float> &h_input = input.getDataVector();
     std::vector<float> h_output(N * D);
 
@@ -139,4 +136,20 @@ void LayerNorm::updateWeights(float learning_rate) {
     // Reset gradients
     grad_gamma.fill(0.0f);
     grad_beta.fill(0.0f);
+}
+
+void LayerNorm::saveWeights(std::ofstream& file) {
+    file.write(reinterpret_cast<const char*>(&d_model), sizeof(size_t));
+    file.write(reinterpret_cast<const char*>(&epsilon), sizeof(double));
+    Matrix::saveMatrix(file, gamma);
+    Matrix::saveMatrix(file, beta);
+}
+
+void LayerNorm::loadWeights(std::ifstream& file) {
+    file.read(reinterpret_cast<char*>(&d_model), sizeof(size_t));
+    file.read(reinterpret_cast<char*>(&epsilon), sizeof(double));
+    gamma = Matrix::loadMatrix(file);
+    beta = Matrix::loadMatrix(file);
+    grad_gamma = Matrix(gamma.getRows(), gamma.getCols(), 0.0);
+    grad_beta = Matrix(beta.getRows(), beta.getCols(), 0.0);
 }

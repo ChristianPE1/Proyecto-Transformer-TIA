@@ -9,6 +9,8 @@ public:
     Matrix forward(const Matrix &input);
     Matrix backward(const Matrix &grad_output, const Matrix &input);
     void updateWeights(float learning_rate);
+    void saveWeights(std::ofstream& file);
+    void loadWeights(std::ifstream& file);
 private:
     std::size_t d_model;
     double epsilon;
