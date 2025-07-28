@@ -17,6 +17,8 @@ ViTMNIST train_fashion();
 
 ViTMNIST train_organc();
 
+ViTMNIST continue_train_organc();
+
 ViTMNIST train_blood();
 
 int main(int argc, char** argv) {
@@ -24,7 +26,7 @@ int main(int argc, char** argv) {
     std::cout << "CPU version" << std::endl;
 
 
-    train_blood();  // Cambiado para entrenar con OrganCMNIST
+    continue_train_organc();  // Cambiado para continuar entrenamiento de OrganCMNIST
 
     /*
     try {
@@ -191,6 +193,61 @@ ViTMNIST train_organc() {
     return vit_model;
 }
 
+ViTMNIST continue_train_organc() {
+    std::cout << "Continuing OrganCMNIST training from saved weights..." << std::endl;
+    MNISTLoader loader;
+    std::string data_path = std::string(DATA_DIR);
+    std::string organc_dir = data_path + "organc";
+
+    // Cargar datos de OrganCMNIST usando el método existente
+    auto [train_data, test_data] = loader.load_organc_mnist(organc_dir);
+    
+    std::cout << "Loaded training data: " << train_data.images.size() << " images and "
+        << train_data.labels.size() << " labels" << std::endl;
+    std::cout << "Loaded test data: " << test_data.images.size() << " images and "
+        << test_data.labels.size() << " labels" << std::endl;
+
+    // IMPORTANTE: Usar exactamente los mismos parámetros que en el entrenamiento original
+    int patch_size = 7;
+    int embed_dim = 64;
+    int num_heads = 2;
+    int num_layers = 3;
+    int mlp_hidden_layers_size = 96;
+    int num_classes = 11; // OrganCMNIST tiene 11 clases
+
+    // Crear modelo con la misma arquitectura
+    ViTMNIST vit_model(
+        patch_size,
+        embed_dim,
+        num_heads,
+        num_layers,
+        mlp_hidden_layers_size,
+        num_classes);
+
+    // Cargar pesos desde el archivo guardado
+    std::string weights_path = "organc-vit-15.bin"; // Archivo en la raíz del proyecto
+    try {
+        vit_model.load_weights(weights_path);
+        std::cout << "Successfully loaded weights from: " << weights_path << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading weights: " << e.what() << std::endl;
+        return vit_model;
+    }
+
+    std::cout << "Vision Transformer for OrganCMNIST resuming training..." << std::endl;
+
+    // Parámetros de entrenamiento para continuar (puedes ajustar según necesites)
+    int num_epochs = 15;        // Épocas adicionales a entrenar
+    int batch_size = 32;        // Mantener el mismo batch size
+    float learning_rate = 0.0003f; // Learning rate más bajo para fine-tuning
+    int save_each_epoch = 3;
+
+    Trainer trainer(num_epochs, batch_size, learning_rate);
+    trainer.train(vit_model, train_data, test_data, save_each_epoch);
+
+    return vit_model;
+}
+
 
 ViTMNIST train_blood() {
     std::cout << "Loading BloodCMNIST dataset..." << std::endl;
@@ -223,10 +280,9 @@ ViTMNIST train_blood() {
 
     std::cout << "Vision Transformer for BloodCMNIST initialized" << std::endl;
 
-    // Training parameters - puede ser necesario ajustar para OrganCMNIST
     int num_epochs = 15;
-    int batch_size = 32;  // Batch size más pequeño para dataset médico
-    float learning_rate = 0.001f;  // Learning rate más conservativo
+    int batch_size = 32; 
+    float learning_rate = 0.001f; 
     int save_each_epoch = 1;
 
     Trainer trainer(num_epochs, batch_size, learning_rate);
