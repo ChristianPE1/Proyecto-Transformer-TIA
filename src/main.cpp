@@ -15,13 +15,16 @@ ViTMNIST train_mnist();
 
 ViTMNIST train_fashion();
 
+ViTMNIST train_organc();
+
+ViTMNIST train_blood();
 
 int main(int argc, char** argv) {
     std::cout << "=== Vision Transformer for MNIST Classification ===" << std::endl;
     std::cout << "CPU version" << std::endl;
 
 
-    train_fashion();
+    train_blood();  // Cambiado para entrenar con OrganCMNIST
 
     /*
     try {
@@ -144,3 +147,90 @@ ViTMNIST train_fashion() {
     return vit_model;
 }
 
+ViTMNIST train_organc() {
+    std::cout << "Loading OrganCMNIST dataset..." << std::endl;
+    MNISTLoader loader;
+    std::string data_path = std::string(DATA_DIR);
+    std::string organc_dir = data_path + "organc";
+
+    // Cargar datos de OrganCMNIST usando el nuevo método
+    auto [train_data, test_data] = loader.load_organc_mnist(organc_dir);
+    
+    std::cout << "Loaded training data: " << train_data.images.size() << " images and "
+        << train_data.labels.size() << " labels" << std::endl;
+    std::cout << "Loaded test data: " << test_data.images.size() << " images and "
+        << test_data.labels.size() << " labels" << std::endl;
+
+    // Note: OrganCMNIST tiene imágenes de 28x28 como MNIST clásico
+    int patch_size = 7;
+    int embed_dim = 64;
+    int num_heads = 2;
+    int num_layers = 3;
+    int mlp_hidden_layers_size = 96;
+    int num_classes = 11; // OrganCMNIST tiene 11 clases
+
+    ViTMNIST vit_model(
+        patch_size,
+        embed_dim,
+        num_heads,
+        num_layers,
+        mlp_hidden_layers_size,
+        num_classes);
+
+    std::cout << "Vision Transformer for OrganCMNIST initialized" << std::endl;
+
+    // Training parameters - puede ser necesario ajustar para OrganCMNIST
+    int num_epochs = 15;
+    int batch_size = 32;  // Batch size más pequeño para dataset médico
+    float learning_rate = 0.0005f;  // Learning rate más conservativo
+    int save_each_epoch = 3;
+
+    Trainer trainer(num_epochs, batch_size, learning_rate);
+    trainer.train(vit_model, train_data, test_data, save_each_epoch);
+
+    return vit_model;
+}
+
+
+ViTMNIST train_blood() {
+    std::cout << "Loading BloodCMNIST dataset..." << std::endl;
+    MNISTLoader loader;
+    std::string data_path = std::string(DATA_DIR);
+    std::string organc_dir = data_path + "blood";
+
+    // Cargar datos de OrganCMNIST usando el nuevo método
+    auto [train_data, test_data] = loader.load_organc_mnist(organc_dir);
+    
+    std::cout << "Loaded training data: " << train_data.images.size() << " images and "
+        << train_data.labels.size() << " labels" << std::endl;
+    std::cout << "Loaded test data: " << test_data.images.size() << " images and "
+        << test_data.labels.size() << " labels" << std::endl;
+
+    int patch_size = 7;
+    int embed_dim = 64;
+    int num_heads = 2;
+    int num_layers = 3;
+    int mlp_hidden_layers_size = 96;
+    int num_classes = 8; 
+
+    ViTMNIST vit_model(
+        patch_size,
+        embed_dim,
+        num_heads,
+        num_layers,
+        mlp_hidden_layers_size,
+        num_classes);
+
+    std::cout << "Vision Transformer for BloodCMNIST initialized" << std::endl;
+
+    // Training parameters - puede ser necesario ajustar para OrganCMNIST
+    int num_epochs = 15;
+    int batch_size = 32;  // Batch size más pequeño para dataset médico
+    float learning_rate = 0.001f;  // Learning rate más conservativo
+    int save_each_epoch = 1;
+
+    Trainer trainer(num_epochs, batch_size, learning_rate);
+    trainer.train(vit_model, train_data, test_data, save_each_epoch);
+
+    return vit_model;
+}
