@@ -100,10 +100,10 @@ ViTMNIST train_fashion() {
     std::cout << "Loading MNIST dataset..." << std::endl;
     MNISTLoader loader;
     std::string data_path = std::string(DATA_DIR);
-    std::string train_images_path = data_path + "fashion/train-images.idx3-ubyte";
-    std::string train_labels_path = data_path + "fashion/train-labels.idx1-ubyte";
-    std::string test_images_path = data_path + "fashion/t10k-images.idx3-ubyte";
-    std::string test_labels_path = data_path + "fashion/t10k-labels.idx1-ubyte";
+    std::string train_images_path = data_path + "fashion/train-images-idx3-ubyte";
+    std::string train_labels_path = data_path + "fashion/train-labels-idx1-ubyte";
+    std::string test_images_path = data_path + "fashion/t10k-images-idx3-ubyte";
+    std::string test_labels_path = data_path + "fashion/t10k-labels-idx1-ubyte";
 
     // Cargar datos de entrenamiento
     MNISTData train_data = loader.load(train_images_path, train_labels_path);
