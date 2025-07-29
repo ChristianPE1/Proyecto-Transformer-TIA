@@ -143,7 +143,7 @@ int embed_dim = 64;              // Dimensión de embedding
 int num_heads = 2;               // Número de cabezas de atención
 int num_layers = 3;              // Número de capas transformer
 int mlp_hidden_layers_size = 96; // Tamaño de capas ocultas MLP
-int num_classes = 11;            // Número de clases de salida
+int num_classes = 10;            // Número de clases de salida
 
 ViTMNIST vit_model(patch_size, embed_dim, num_heads, 
                    num_layers, mlp_hidden_layers_size, num_classes);
@@ -198,8 +198,8 @@ Proyecto-Transformer-TIA/
 
 | Dataset | Test Accuracy | Épocas | Batch Size | Learning Rate |
 |---------|---------------|--------|------------|---------------|
-| MNIST | ~90%* | 10 | 64 | 0.001 |
-| Fashion-MNIST | ~80%* | 10 | 64 | 0.001 |
+| MNIST | ~90%* | 50 | 64 | 0.001 |
+| Fashion-MNIST | ~80%* | 20 | 64 | 0.001 |
 | Afro-MNIST | 98% | 15 | 32 | 0.0005 |
 
 *Resultados aproximados, pueden variar según la configuración y el dataset.
