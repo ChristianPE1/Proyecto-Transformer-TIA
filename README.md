@@ -132,7 +132,7 @@ int embed_dim = 64;              // Dimensión de embedding
 int num_heads = 2;               // Número de cabezas de atención
 int num_layers = 3;              // Número de capas transformer
 int mlp_hidden_layers_size = 96; // Tamaño de capas ocultas MLP
-int num_classes = 11;            // Número de clases de salida
+int num_classes = 10;            // Número de clases de salida
 
 ViTMNIST vit_model(patch_size, embed_dim, num_heads, 
                    num_layers, mlp_hidden_layers_size, num_classes);
