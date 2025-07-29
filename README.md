@@ -187,8 +187,8 @@ Proyecto-Transformer-TIA/
 
 | Dataset | Test Accuracy | Épocas | Batch Size | Learning Rate |
 |---------|---------------|--------|------------|---------------|
-| MNIST | ~90%* | 10 | 64 | 0.001 |
-| Fashion-MNIST | ~80%* | 10 | 64 | 0.001 |
+| MNIST | ~90%* | 50 | 64 | 0.001 |
+| Fashion-MNIST | ~80%* | 20 | 64 | 0.001 |
 | Afro-MNIST | 98% | 15 | 32 | 0.0005 |
 
 *Resultados aproximados, pueden variar según la configuración y el dataset.
