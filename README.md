@@ -187,9 +187,9 @@ Proyecto-Transformer-TIA/
 
 | Dataset | Test Accuracy | Épocas | Batch Size | Learning Rate |
 |---------|---------------|--------|------------|---------------|
-| MNIST | ~95%* | 10 | 64 | 0.001 |
+| MNIST | ~90%* | 10 | 64 | 0.001 |
 | Fashion-MNIST | ~80%* | 10 | 64 | 0.001 |
-| Afro-MNIST | 61.22% | 15 | 32 | 0.0005 |
+| Afro-MNIST | 98% | 15 | 32 | 0.0005 |
 
 *Resultados aproximados, pueden variar según la configuración y el dataset.
 
@@ -252,21 +252,15 @@ vit_model.save_weights("vit-{epoch}.bin");
 vit_model.load_weights("vit-{epoch}.bin");
 ```
 
-## 🤝 Contribuir
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
 
 ### Áreas de mejora
 
-- [ ] Implementación de data augmentation
-- [ ] Soporte para GPU/CUDA
-- [ ] Optimización de memoria
-- [ ] Más datasets médicos
-- [ ] Interfaz gráfica para visualización
+- Implementación de data augmentation
+- Soporte para GPU/CUDA
+- Optimización de memoria
+- Más datasets médicos
+- Interfaz gráfica para visualización
 
 ## Referencias
 

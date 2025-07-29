@@ -91,7 +91,7 @@ ClassificationResult Classifier::classifySingleImage(const std::string& image_pa
     std::vector<float> image_data = loadProcessedImage(image_path);
 
     if (image_data.empty() || image_data.size() != 784) {
-        result.error_message = "Datos de imagen inválidos";
+        result.error_message = "Datos de imagen invalidos";
         return result;
     }
 
@@ -104,7 +104,7 @@ ClassificationResult Classifier::classifyImageData(const std::vector<float>& ima
     result.success = false;
 
     if (image_data.size() != 784) {
-        result.error_message = "Tamano de imagen incorrecto (debe ser 784 píxeles)";
+        result.error_message = "Tamano de imagen incorrecto (debe ser 784 pixeles)";
         return result;
     }
 
@@ -115,7 +115,7 @@ ClassificationResult Classifier::classifyImageData(const std::vector<float>& ima
         // Forward pass
         Matrix logits = model.forward(image);
 
-        // Obtener predicción
+        // Obtener prediccion
         std::vector<float> logits_data = logits.getDataVector();
 
         // Aplicar softmax
@@ -123,26 +123,26 @@ ClassificationResult Classifier::classifyImageData(const std::vector<float>& ima
 
         // Encontrar la clase con mayor probabilidad
         int predicted_class = std::max_element(probabilities.begin(), probabilities.end()) - probabilities.begin();
-        float confidence = probabilities[predicted_class];
+        float precision = probabilities[predicted_class];
 
         // Obtener top predictions
         std::vector<std::pair<float, int>> top_predictions = getTopPredictions(probabilities, 3);
 
         // Llenar resultado
         result.predicted_class = predicted_class;
-        result.confidence = confidence;
+        result.precision = precision;
         result.top_predictions = top_predictions;
         result.success = true;
 
         if (verbose && !image_name.empty()) {
             ImageStats stats = analyzeImageData(image_data);
             std::cout << "Rango de datos: [" << stats.min_value << ", " << stats.max_value << "]" << std::endl;
-            std::cout << "Píxeles blancos: " << stats.white_pixels << ", negros: " << stats.black_pixels << std::endl;
+            std::cout << "PPixeles blancos: " << stats.white_pixels << ", negros: " << stats.black_pixels << std::endl;
         }
 
     }
     catch (const std::exception& e) {
-        result.error_message = std::string("Error durante clasificación: ") + e.what();
+        result.error_message = std::string("Error durante clasificacion: ") + e.what();
     }
 
     return result;
@@ -180,7 +180,7 @@ std::vector<ClassificationResult> Classifier::classifyAllProcessedImages(const s
         return results;
     }
 
-    // Ordenar archivos alfabéticamente
+    // Ordenar archivos alfabï¿½ticamente
     std::sort(bin_files.begin(), bin_files.end());
 
     if (verbose) {
@@ -209,7 +209,7 @@ void Classifier::printClassificationResult(const ClassificationResult& result) {
     std::cout << "\n--- Resultado de Clasificacion ---" << std::endl;
     std::cout << "Imagen: " << result.image_path << std::endl;
     std::cout << "Digito predicho: " << result.predicted_class << std::endl;
-    std::cout << "Confianza: " << (result.confidence * 100.0f) << "%" << std::endl;
+    std::cout << "Precision: " << (result.precision * 100.0f) << "%" << std::endl;
 
     std::cout << "Top 3 predicciones:" << std::endl;
     for (const auto& prediction : result.top_predictions) {
@@ -242,7 +242,7 @@ void Classifier::printSummaryResults(const std::vector<ClassificationResult>& re
         std::cout << "\nDistribucion de predicciones:" << std::endl;
         for (int i = 0; i < 10; ++i) {
             if (class_counts[i] > 0) {
-                std::cout << "Dígito " << i << ": " << class_counts[i] << " predicciones" << std::endl;
+                std::cout << "Digito " << i << ": " << class_counts[i] << " predicciones" << std::endl;
             }
         }
     }

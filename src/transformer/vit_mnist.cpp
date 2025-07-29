@@ -136,7 +136,6 @@ ViTBlock::ViTBlock(int embed_dim, int num_heads, int mlp_hidden_layers)
 }
 
 Matrix ViTBlock::forward(const Matrix& x) {
-    // Versión completa con atención entreneable
     stored_input = x;
     
     // Self-attention con norm1
@@ -157,7 +156,6 @@ Matrix ViTBlock::forward(const Matrix& x) {
 }
 
 Matrix ViTBlock::backward(const Matrix& grad_output) {
-    // Backward completo con atención
     
     // Retropropagar por segunda conexion residual
     Matrix grad_x1_from_residual = grad_output;
@@ -403,9 +401,6 @@ int ViTMNIST::predict(const Matrix& image) {
 
     return predicted_class;
 }
-
-// --- Metodos para PatchEmbedding y otros componentes pueden agregarse si se requiere entrenamiento completo ---
-// Por ahora, solo se tiene el entrenamiento simplificado de la capa de clasificacion
 
 void ViTMNIST::save_weights(const std::string& file_path) {
     std::ofstream file(file_path, std::ios::binary);

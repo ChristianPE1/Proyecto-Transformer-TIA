@@ -163,7 +163,6 @@ ViTMNIST train_organc() {
     std::cout << "Loaded test data: " << test_data.images.size() << " images and "
         << test_data.labels.size() << " labels" << std::endl;
 
-    // Note: OrganCMNIST tiene imágenes de 28x28 como MNIST clásico
     int patch_size = 7;
     int embed_dim = 64;
     int num_heads = 2;
@@ -181,9 +180,9 @@ ViTMNIST train_organc() {
 
     std::cout << "Vision Transformer for OrganCMNIST initialized" << std::endl;
 
-    // Training parameters - puede ser necesario ajustar para OrganCMNIST
+    // Training parameters
     int num_epochs = 15;
-    int batch_size = 32;  // Batch size más pequeño para dataset médico
+    int batch_size = 32;  // Batch size pequeño, dataset médico
     float learning_rate = 0.0005f;  // Learning rate más conservativo
     int save_each_epoch = 3;
 
@@ -225,7 +224,7 @@ ViTMNIST continue_train_organc() {
         num_classes);
 
     // Cargar pesos desde el archivo guardado
-    std::string weights_path = "organc-vit-15.bin"; // Archivo en la raíz del proyecto
+    std::string weights_path = "weights/organc-vit-15.bin"; // Archivo binario con pesos guardados
     try {
         vit_model.load_weights(weights_path);
         std::cout << "Successfully loaded weights from: " << weights_path << std::endl;
@@ -237,7 +236,7 @@ ViTMNIST continue_train_organc() {
     std::cout << "Vision Transformer for OrganCMNIST resuming training..." << std::endl;
 
     // Parámetros de entrenamiento para continuar (puedes ajustar según necesites)
-    int num_epochs = 15;        // Épocas adicionales a entrenar
+    int num_epochs = 15;
     int batch_size = 32;        // Mantener el mismo batch size
     float learning_rate = 0.0003f; // Learning rate más bajo para fine-tuning
     int save_each_epoch = 3;

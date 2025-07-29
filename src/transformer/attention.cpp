@@ -409,8 +409,7 @@ void MultiHeadAttention::updateWeights(float learning_rate) {
 }
 
 void MultiHeadAttention::updateGradients(const Matrix &grad_output, const Matrix &query, const Matrix &key, const Matrix &value) {
-    // Los gradientes ya se calculan en el método backward, no necesitamos hacer nada aquí
-    // Este método se mantiene por compatibilidad pero no hace nada
+    // Este método se mantiene por compatibilidad, no hace nada
 }
 
 // Implementación en MultiHeadAttention

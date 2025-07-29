@@ -9,7 +9,7 @@
 
 struct ClassificationResult {
     int predicted_class;
-    float confidence;
+    float precision;
     std::vector<std::pair<float, int>> top_predictions;
     std::string image_path;
     bool success;
@@ -25,35 +25,35 @@ struct ImageStats {
 };
 
 class Classifier {
-private:
-    ViTMNIST model;
+    private:
+        ViTMNIST model;
 
-    std::vector<float> loadProcessedImage(const std::string& filename);
-    ImageStats analyzeImageData(const std::vector<float>& image_data);
-    std::vector<float> applySoftmax(const std::vector<float>& logits);
-    std::vector<std::pair<float, int>> getTopPredictions(const std::vector<float>& probabilities, int top_k = 3);
+        std::vector<float> loadProcessedImage(const std::string& filename);
+        ImageStats analyzeImageData(const std::vector<float>& image_data);
+        std::vector<float> applySoftmax(const std::vector<float>& logits);
+        std::vector<std::pair<float, int>> getTopPredictions(const std::vector<float>& probabilities, int top_k = 3);
 
-public:
+    public:
 
-    Classifier(ViTMNIST& model) : model(model) {}
+        Classifier(ViTMNIST& model) : model(model) {}
 
 
 
-    ~Classifier() = default;
+        ~Classifier() = default;
 
-    ClassificationResult classifySingleImage(const std::string& image_path);
+        ClassificationResult classifySingleImage(const std::string& image_path);
 
-    std::vector<ClassificationResult> classifyAllProcessedImages(const std::string& processed_dir);
+        std::vector<ClassificationResult> classifyAllProcessedImages(const std::string& processed_dir);
 
-    ClassificationResult classifyImageData(const std::vector<float>& image_data, const std::string& image_name = "");
+        ClassificationResult classifyImageData(const std::vector<float>& image_data, const std::string& image_name = "");
 
-    void printClassificationResult(const ClassificationResult& result);
-    void printSummaryResults(const std::vector<ClassificationResult>& results);
+        void printClassificationResult(const ClassificationResult& result);
+        void printSummaryResults(const std::vector<ClassificationResult>& results);
 
-    void setVerbose(bool verbose) { this->verbose = verbose; }
+        void setVerbose(bool verbose) { this->verbose = verbose; }
 
-private:
-    bool verbose = true;
+    private:
+        bool verbose = true;
 };
 
 

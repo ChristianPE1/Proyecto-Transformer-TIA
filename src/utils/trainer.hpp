@@ -9,22 +9,20 @@
 
 
 class Trainer {
-private:
-    int num_epochs;
-    int batch_size;
-    float learning_rate;
-    std::mt19937 gen;
+    private:
+        int num_epochs;
+        int batch_size;
+        float learning_rate;
+        std::mt19937 gen;
 
-public:
+    public:
 
-	Trainer(int num_epochs, int batch_size, float learning_rate);
+        Trainer(int num_epochs, int batch_size, float learning_rate);
+        void train(ViTMNIST& model, const MNISTData& train_data, const MNISTData& test_data, int save_each_epoch);
 
-	void train(ViTMNIST& model, const MNISTData& train_data, const MNISTData& test_data, int save_each_epoch);
 
-
-private:
-
-    // Función para evaluar el modelo en datos de test
-    float evaluate_model(ViTMNIST& model, const MNISTData& test_data);
+    private:
+        // Funcion para evaluar el modelo en datos de test
+        float evaluate_model(ViTMNIST& model, const MNISTData& test_data);
 
 };
