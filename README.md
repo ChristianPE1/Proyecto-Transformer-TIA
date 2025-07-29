@@ -6,6 +6,17 @@
 
 Una implementación completa desde cero del **Vision Transformer (ViT)** en C++ puro, capaz de clasificar imágenes en múltiples datasets médicos y tradicionales. Este proyecto implementa el mecanismo de self-attention y arquitectura transformer para visión por computadora.
 
+## Integrantes
+
+**Christian Pardavé Espinoza** - [ChristianPE1](https://github.com/ChristianPE1)
+
+**Berly Diaz Castro** - [Berly01](https://github.com/Berly01)
+
+**Leonardo Montoya Choque** - [Legonnarth](https://github.com/Legonnarth)
+
+**Saul Condori Machaca** - [SaulCondoriM](https://github.com/SaulCondoriM)
+
+
 ## Tabla de Contenidos
 
 - [Características](#-características)
@@ -273,16 +284,6 @@ vit_model.load_weights("vit-{epoch}.bin");
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## Autor
-
-**Christian Pardavé Espinoza** - [ChristianPE1](https://github.com/ChristianPE1)
-
-**Berly Diaz Castro** - [Berly01](https://github.com/Berly01)
-
-**Leonardo Montoya Choque** - [Legonnarth](https://github.com/Legonnarth)
-
-**Saul Condori Machaca** - [SaulCondoriM](https://github.com/SaulCondoriM)
 
 ---
 
