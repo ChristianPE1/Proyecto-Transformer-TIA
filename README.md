@@ -36,7 +36,7 @@ Una implementación completa desde cero del **Vision Transformer (ViT)** en C++ 
 - **Multi-Head Self-Attention** con escalado y normalización
 - **Soporte para múltiples datasets**:
   - MNIST clásico - Accuracy ~90
-  - Fashion-MNIST - Accuracy ~89
+  - Fashion-MNIST - Accuracy ~80
   - Afro-MNIST - Accuracy ~85
 - **Entrenamiento y evaluación** con métrica de accuracy
 - **Guardado y carga de modelos** entrenados (formato .bin)
